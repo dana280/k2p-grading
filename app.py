@@ -188,7 +188,7 @@ st.markdown("""
 # לוגו
 st.markdown('<div class="logo-top">', unsafe_allow_html=True)
 try:
-    st.image("k2p_logo.png", width=200)
+    st.image("https://5el36i5klq.ufs.sh/f/Z3t1XHIXUkD6xQHZrGWFhpxfDNksJS2BnKoAX3W6gZbLziVm", width=350)
 except:
     st.markdown("<div style='text-align:right;color:#0080C8;font-weight:600;'>K2P</div>", unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
@@ -200,6 +200,10 @@ st.markdown("## קורס התנהגות ארגונית")
 # API
 if 'api_key' not in st.session_state:
     st.session_state.api_key = ""
+
+# *** שינוי 1: הוספת counter למחיקת קבצים ***
+if 'uploader_key' not in st.session_state:
+    st.session_state.uploader_key = 0
 
 with st.expander("הגדרות", expanded=False):
     api_key = st.text_input(
@@ -374,12 +378,13 @@ def create_styled_excel(results):
     output.seek(0)
     return output
 
-# העלאה
+# העלאה - *** שינוי 2: הוספת key שמשתנה ***
 uploaded_files = st.file_uploader(
     "גרור קבצים או לחץ לבחירה",
     type=['docx'],
     accept_multiple_files=True,
-    help="קבצי Word בלבד"
+    help="קבצי Word בלבד",
+    key=f"uploader_{st.session_state.uploader_key}"
 )
 
 if uploaded_files:
@@ -474,6 +479,7 @@ if 'results' in st.session_state and st.session_state.results:
     with col2:
         if st.button("נקה"):
             del st.session_state.results
+            st.session_state.uploader_key += 1  # *** שינוי 3: העלאת counter ***
             st.rerun()
 
 st.markdown("<br><br>", unsafe_allow_html=True)
