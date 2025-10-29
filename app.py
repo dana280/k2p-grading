@@ -7,95 +7,75 @@ import io
 import re
 from datetime import datetime
 
-# הגדרות עמוד
 st.set_page_config(
-    page_title="K2P - מערכת בדיקת מטלות",
+    page_title="K2P - בדיקת מטלות",
     page_icon="📚",
-    layout="wide",
+    layout="centered",
     initial_sidebar_state="collapsed"
 )
 
-# CSS נקי ומינימליסטי
 st.markdown("""
 <style>
-    /* ניקוי */
     #MainMenu, footer, header {visibility: hidden;}
-    .block-container {padding-top: 1.5rem; max-width: 1200px;}
+    .block-container {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+        max-width: 700px;
+    }
     
-    /* רקע נקי */
     .main {
-        background-color: #f8f9fa;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background-color: #ffffff;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica', sans-serif;
     }
     
-    /* לוגו בפינה */
-    .logo-corner {
-        position: fixed;
-        top: 1rem;
-        right: 2rem;
-        z-index: 999;
+    /* לוגו */
+    .logo-top {
+        text-align: right;
+        margin-bottom: 3rem;
     }
     
-    /* כותרת פשוטה */
-    .header-simple {
+    /* כותרת */
+    h1, h2, h3 {
         text-align: center;
-        padding: 1.5rem 2rem;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        margin-bottom: 2rem;
-        border-left: 4px solid #0080C8;
-    }
-    
-    .header-simple h1 {
+        font-weight: 500;
         color: #1a1a1a;
+    }
+    
+    h1 {
         font-size: 1.8rem;
-        font-weight: 600;
-        margin: 0;
+        margin-bottom: 0.3rem;
     }
     
-    .header-simple h2 {
+    h2 {
+        font-size: 1rem;
         color: #666;
-        font-size: 1.1rem;
         font-weight: 400;
-        margin: 0.3rem 0 0 0;
+        margin-bottom: 3rem;
     }
     
-    /* ריבוע העלאה באמצע */
-    .upload-square-container {
-        max-width: 500px;
-        margin: 3rem auto;
-    }
-    
+    /* ריבוע העלאה */
     [data-testid="stFileUploader"] {
-        border: 2px dashed #0080C8;
-        border-radius: 12px;
-        background: white;
-        padding: 2.5rem;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        transition: all 0.3s ease;
-        min-height: 250px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        background: #fafafa;
+        padding: 4rem 2rem;
+        transition: border-color 0.2s;
+        max-width: 450px;
+        margin: 0 auto;
     }
     
     [data-testid="stFileUploader"]:hover {
-        border-color: #7FBA00;
-        box-shadow: 0 6px 16px rgba(0,128,200,0.15);
-        transform: translateY(-2px);
+        border-color: #0080C8;
     }
     
     [data-testid="stFileUploader"] section {
-        padding: 1.5rem;
-        text-align: center;
-        width: 100%;
+        padding: 0;
     }
     
     [data-testid="stFileUploader"] label {
-        font-size: 1.1rem !important;
-        font-weight: 600 !important;
-        color: #0080C8 !important;
+        font-size: 0.95rem !important;
+        font-weight: 500 !important;
+        color: #666 !important;
     }
     
     /* כפתור */
@@ -103,166 +83,136 @@ st.markdown("""
         background-color: #0080C8;
         color: white;
         border: none;
-        border-radius: 8px;
-        padding: 0.7rem 2rem;
-        font-size: 1rem;
-        font-weight: 600;
-        transition: all 0.2s ease;
-        box-shadow: 0 2px 8px rgba(0,128,200,0.2);
+        border-radius: 6px;
+        padding: 0.6rem 2rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+        width: 200px;
+        margin: 2rem auto;
+        display: block;
+        transition: background-color 0.2s;
     }
     
     .stButton>button:hover {
         background-color: #006ba1;
-        box-shadow: 0 4px 12px rgba(0,128,200,0.3);
-        transform: translateY(-1px);
-    }
-    
-    /* מרכוז כפתור */
-    .button-center {
-        text-align: center;
-        margin: 2rem auto;
     }
     
     /* הגדרות */
     .streamlit-expanderHeader {
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-        font-weight: 500;
-        padding: 0.8rem;
-        border-left: 3px solid #0080C8;
+        background: transparent;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        font-weight: 400;
+        font-size: 0.9rem;
+        color: #666;
     }
     
     /* הודעות */
-    .stSuccess {
-        background-color: #f0f9ff;
-        border-left: 4px solid #0080C8;
-        border-radius: 8px;
-        padding: 1rem;
-        color: #0369a1;
+    .stSuccess, .stError, .stInfo {
+        border-radius: 6px;
+        padding: 0.8rem;
+        font-size: 0.9rem;
+        border: none;
     }
     
-    .stInfo {
-        background-color: #eff6ff;
-        border-left: 4px solid #3b82f6;
-        border-radius: 8px;
-        padding: 1rem;
-        color: #1e40af;
+    .stSuccess {
+        background-color: #f0f9ff;
+        color: #0369a1;
     }
     
     .stError {
         background-color: #fef2f2;
-        border-left: 4px solid #ef4444;
-        border-radius: 8px;
-        padding: 1rem;
         color: #991b1b;
     }
     
     /* מטריקות */
     [data-testid="stMetricValue"] {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #0080C8;
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #1a1a1a;
     }
     
     [data-testid="stMetricLabel"] {
-        font-size: 0.85rem;
-        color: #666;
-        font-weight: 600;
+        font-size: 0.8rem;
+        color: #888;
+        font-weight: 400;
     }
     
-    /* קלפי תוצאות */
-    .results-container {
-        background: white;
-        border-radius: 12px;
+    /* תוצאות */
+    .results-box {
+        background: #fafafa;
+        border-radius: 8px;
         padding: 2rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        margin-top: 2rem;
+        margin-top: 3rem;
     }
     
     /* טבלה */
     table {
-        background: white;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        border: 1px solid #e5e7eb;
-    }
-    
-    table thead {
-        background-color: #f8f9fa;
+        font-size: 0.85rem;
+        margin-top: 1.5rem;
     }
     
     table th {
-        color: #1a1a1a !important;
-        font-weight: 600;
-        padding: 12px !important;
-        border-bottom: 2px solid #e5e7eb;
+        background-color: #fafafa;
+        color: #666;
+        font-weight: 500;
+        padding: 10px;
+        border-bottom: 1px solid #e0e0e0;
+        text-transform: none;
     }
     
     table td {
-        padding: 10px !important;
-        border-bottom: 1px solid #f3f4f6;
+        padding: 10px;
+        border-bottom: 1px solid #f5f5f5;
     }
     
-    /* תיבת טקסט */
+    /* טקסט */
     .stTextInput>div>div>input {
-        border-radius: 8px;
         border: 1px solid #e0e0e0;
-        padding: 0.6rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
     }
     
     .stTextInput>div>div>input:focus {
         border-color: #0080C8;
-        box-shadow: 0 0 0 2px rgba(0,128,200,0.1);
+        box-shadow: none;
     }
     
-    /* Progress bar */
+    /* Progress */
     .stProgress > div > div > div > div {
         background-color: #0080C8;
     }
-    
-    /* מרווחים */
-    .space-small {margin: 1rem 0;}
-    .space-medium {margin: 2rem 0;}
-    .space-large {margin: 3rem 0;}
 </style>
 """, unsafe_allow_html=True)
 
-# לוגו בפינה
-st.markdown('<div class="logo-corner">', unsafe_allow_html=True)
+# לוגו
+st.markdown('<div class="logo-top">', unsafe_allow_html=True)
 try:
-    st.image("k2p_logo.png", width=150)
+    st.image("k2p_logo.png", width=120)
 except:
-    pass
+    st.markdown("<div style='text-align:right;color:#0080C8;font-weight:600;'>K2P</div>", unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-# כותרת פשוטה
-st.markdown("""
-<div class="header-simple">
-    <h1>מערכת בדיקת מטלות אקדמאיות</h1>
-    <h2>קורס התנהגות ארגונית</h2>
-</div>
-""", unsafe_allow_html=True)
+# כותרת
+st.markdown("# מערכת בדיקת מטלות אקדמאיות")
+st.markdown("## קורס התנהגות ארגונית")
 
-# API Key
+# API
 if 'api_key' not in st.session_state:
     st.session_state.api_key = ""
 
-# הגדרות
-with st.expander("⚙️ הגדרות", expanded=False):
+with st.expander("הגדרות", expanded=False):
     api_key = st.text_input(
         "Claude API Key",
         type="password",
         value=st.session_state.api_key,
-        placeholder="הזן API Key",
+        placeholder="הזן מפתח",
         key="api_input"
     )
     if api_key:
         st.session_state.api_key = api_key
-        st.success("API Key נשמר")
+        st.success("נשמר")
 
-# פונקציות
 def read_docx(file):
     try:
         doc = docx.Document(file)
@@ -272,23 +222,18 @@ def read_docx(file):
 
 def extract_work_number(filename):
     name = filename.replace('.docx', '').replace('.doc', '')
-    
     match = re.search(r'WorkCode[_-]?(\d+)', name, re.IGNORECASE)
     if match:
         return match.group(1)
-    
     match = re.search(r'\b(\d{8,9})\b', name)
     if match:
         return match.group(1)
-    
     match = re.search(r'\b(\d{4,})\b', name)
     if match:
         return match.group(1)
-    
     match = re.search(r'(\d+)', name)
     if match:
         return match.group(1)
-    
     return ""
 
 def grade_assignment(content, filename, api_key):
@@ -314,21 +259,16 @@ def grade_assignment(content, filename, api_key):
 
 **חשוב מאוד - כתיבת הערות:**
 1. כתוב **רק** מה שחסר או חלש
-2. אל תכתוב "עבודה טובה", "מצוין", "כל הכבוד", "נעשה יפה" - שום דבר חיובי!
+2. אל תכתוב "עבודה טובה", "מצוין", "כל הכבוד" - שום דבר חיובי!
 3. אל תכתוב "הסטודנט", "כתב", "לא הבין"
 4. כל הערה בשורה נפרדת
-5. **חובה**: כתוב את ההפחתה בסוגריים בסוף כל הערה
-6. אם אין מה לכתוב - השאר ריק (אל תכתוב כלום!)
+5. **חובה**: כתוב את ההפחתה בסוגריים: (-X)
+6. אם אין מה לכתוב - השאר ריק לגמרי
 7. תהיה נדיב - רוב הציונים 85-95
 
-**פורמט נכון:**
+**פורמט:**
 "שאלה 1: חסרה תרבות כללית - תרבות המדינה (-15)
 שאלה 3: ניתן להרחיב על מוטיבציה (-2)"
-
-**פורמט לא נכון (אסור!):**
-"עבודה טובה מאוד! רק..."
-"הסטודנט כתב יפה אבל..."
-"מצוין! חסר רק..."
 
 JSON:
 {{
@@ -370,13 +310,13 @@ JSON:
 def create_styled_excel(results):
     wb = Workbook()
     ws = wb.active
-    ws.title = "תוצאות בדיקה"
+    ws.title = "תוצאות"
     
     headers = ['שם קובץ', 'מספר', 'ציון', 'הערות']
     ws.append(headers)
     
-    header_fill = PatternFill(start_color="F8F9FA", end_color="F8F9FA", fill_type="solid")
-    header_font = Font(bold=True, size=12, name="Arial", color="1A1A1A")
+    header_fill = PatternFill(start_color="F5F5F5", end_color="F5F5F5", fill_type="solid")
+    header_font = Font(bold=True, size=11, name="Arial")
     header_alignment = Alignment(horizontal="center", vertical="center")
     
     for col in range(1, 5):
@@ -384,25 +324,15 @@ def create_styled_excel(results):
         cell.fill = header_fill
         cell.font = header_font
         cell.alignment = header_alignment
-        cell.border = Border(
-            left=Side(style='thin', color="E5E7EB"),
-            right=Side(style='thin', color="E5E7EB"),
-            top=Side(style='thin', color="E5E7EB"),
-            bottom=Side(style='medium', color="E5E7EB")
-        )
-    
-    row_colors = ["FFFFFF", "F9FAFB"]
     
     def get_grade_color(grade):
-        if grade >= 90: return "D1FAE5"
-        if grade >= 85: return "DBEAFE"
-        if grade >= 80: return "FEF3C7"
-        if grade >= 70: return "FED7AA"
-        return "FEE2E2"
+        if grade >= 90: return "E8F5E9"
+        if grade >= 85: return "E3F2FD"
+        if grade >= 80: return "FFF9C4"
+        return "FFEBEE"
     
     for idx, result in enumerate(results):
         row_num = idx + 2
-        bg_color = row_colors[idx % 2]
         
         ws.append([
             result['filename'],
@@ -418,60 +348,46 @@ def create_styled_excel(results):
                 cell.fill = PatternFill(start_color=get_grade_color(result['grade']), 
                                        end_color=get_grade_color(result['grade']), 
                                        fill_type="solid")
-                cell.font = Font(bold=True, size=16, name="Arial")
+                cell.font = Font(bold=True, size=14, name="Arial")
                 cell.alignment = Alignment(horizontal="center", vertical="center")
             else:
-                cell.fill = PatternFill(start_color=bg_color, end_color=bg_color, fill_type="solid")
-                cell.font = Font(size=11, name="Arial")
-                
+                cell.font = Font(size=10, name="Arial")
                 if col == 2:
-                    cell.font = Font(bold=True, size=12, name="Arial")
+                    cell.font = Font(bold=True, size=11, name="Arial")
                     cell.alignment = Alignment(horizontal="center", vertical="center")
                 else:
                     cell.alignment = Alignment(horizontal="right", vertical="top", wrap_text=True)
-            
-            cell.border = Border(
-                left=Side(style='thin', color="E5E7EB"),
-                right=Side(style='thin', color="E5E7EB"),
-                top=Side(style='thin', color="E5E7EB"),
-                bottom=Side(style='thin', color="E5E7EB")
-            )
     
-    ws.column_dimensions['A'].width = 45
+    ws.column_dimensions['A'].width = 40
     ws.column_dimensions['B'].width = 12
     ws.column_dimensions['C'].width = 10
     ws.column_dimensions['D'].width = 100
     
-    ws.row_dimensions[1].height = 30
+    ws.row_dimensions[1].height = 25
     for idx, result in enumerate(results):
         row_num = idx + 2
         lines = len(result['comments'].split('\n')) if result['comments'] else 1
-        ws.row_dimensions[row_num].height = max(60, lines * 20 + 10)
+        ws.row_dimensions[row_num].height = max(50, lines * 18 + 10)
     
     output = io.BytesIO()
     wb.save(output)
     output.seek(0)
     return output
 
-# ריבוע העלאה באמצע
-st.markdown('<div class="upload-square-container">', unsafe_allow_html=True)
-
+# העלאה
 uploaded_files = st.file_uploader(
-    "📤 גרור קבצים לכאן או לחץ לבחירה",
+    "גרור קבצים או לחץ לבחירה",
     type=['docx'],
     accept_multiple_files=True,
-    help="תומך ב-Word (.docx) בלבד"
+    help="קבצי Word בלבד"
 )
 
-st.markdown('</div>', unsafe_allow_html=True)
-
 if uploaded_files:
-    st.success(f"✅ {len(uploaded_files)} קבצים הועלו")
+    st.success(f"{len(uploaded_files)} קבצים הועלו")
     
-    st.markdown('<div class="button-center">', unsafe_allow_html=True)
-    if st.button("🚀 התחל בדיקה", type="primary"):
+    if st.button("התחל בדיקה"):
         if not st.session_state.api_key:
-            st.error("❌ נא להזין Claude API Key בהגדרות")
+            st.error("הזן API Key בהגדרות")
         else:
             results = []
             progress_bar = st.progress(0)
@@ -493,14 +409,13 @@ if uploaded_files:
             st.session_state.results = results
             progress_bar.empty()
             status_text.empty()
-            st.success("✅ הבדיקה הושלמה!")
+            st.success("הושלם")
             st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
 
 # תוצאות
 if 'results' in st.session_state and st.session_state.results:
-    st.markdown('<div class="results-container">', unsafe_allow_html=True)
-    st.markdown("### 📊 תוצאות הבדיקה")
+    st.markdown('<div class="results-box">', unsafe_allow_html=True)
+    st.markdown("### תוצאות")
     
     grades = [r['grade'] for r in st.session_state.results]
     col1, col2, col3, col4 = st.columns(4)
@@ -516,56 +431,50 @@ if 'results' in st.session_state and st.session_state.results:
     
     st.markdown('</div>', unsafe_allow_html=True)
     
-    st.markdown('<div class="space-medium"></div>', unsafe_allow_html=True)
-    
     # טבלה
-    table_html = "<table style='width:100%;'>"
+    table_html = "<table style='width:100%;margin-top:1.5rem;'>"
     table_html += "<thead><tr>"
-    table_html += "<th style='text-align: right;'>קובץ</th>"
-    table_html += "<th style='text-align: center;'>מספר</th>"
-    table_html += "<th style='text-align: center;'>ציון</th>"
-    table_html += "<th style='text-align: right;'>הערות</th>"
+    table_html += "<th style='text-align:right;'>קובץ</th>"
+    table_html += "<th style='text-align:center;'>מספר</th>"
+    table_html += "<th style='text-align:center;'>ציון</th>"
+    table_html += "<th style='text-align:right;'>הערות</th>"
     table_html += "</tr></thead><tbody>"
     
-    for idx, r in enumerate(st.session_state.results):
-        
+    for r in st.session_state.results:
         if r['grade'] >= 90:
-            grade_color = "#d1fae5"
+            color = "#e8f5e9"
         elif r['grade'] >= 85:
-            grade_color = "#dbeafe"
+            color = "#e3f2fd"
         elif r['grade'] >= 80:
-            grade_color = "#fef3c7"
+            color = "#fff9c4"
         else:
-            grade_color = "#fee2e2"
+            color = "#ffebee"
             
         table_html += "<tr>"
-        table_html += f"<td style='text-align: right;'>{r['filename']}</td>"
-        table_html += f"<td style='text-align: center; font-weight: 600;'>{r['workNumber']}</td>"
-        table_html += f"<td style='text-align: center; background-color: {grade_color}; font-weight: 700; font-size: 1.1rem;'>{r['grade']}</td>"
-        table_html += f"<td style='text-align: right; white-space: pre-line; font-size: 0.9rem; color: #555;'>{r['comments']}</td>"
+        table_html += f"<td style='text-align:right;'>{r['filename']}</td>"
+        table_html += f"<td style='text-align:center;font-weight:600;'>{r['workNumber']}</td>"
+        table_html += f"<td style='text-align:center;background:{color};font-weight:600;font-size:1.05rem;'>{r['grade']}</td>"
+        table_html += f"<td style='text-align:right;white-space:pre-line;font-size:0.85rem;color:#555;'>{r['comments']}</td>"
         table_html += "</tr>"
     
     table_html += "</tbody></table>"
     st.markdown(table_html, unsafe_allow_html=True)
     
-    st.markdown('<div class="space-medium"></div>', unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
     
-    col1, col2, col3 = st.columns([2, 1, 2])
-    
+    col1, col2 = st.columns(2)
     with col1:
         excel_file = create_styled_excel(st.session_state.results)
         st.download_button(
-            label="📥 הורד Excel",
+            label="הורד Excel",
             data=excel_file,
             file_name=f"תוצאות_{datetime.now().strftime('%Y%m%d')}.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            use_container_width=True
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
-    
-    with col3:
-        if st.button("🗑️ נקה", use_container_width=True):
+    with col2:
+        if st.button("נקה"):
             del st.session_state.results
             st.rerun()
 
-st.markdown('<div class="space-large"></div>', unsafe_allow_html=True)
-st.markdown("<div style='text-align:center;color:#999;font-size:0.85rem;'>K2P - Knowledge to People • גרסה 2.0</div>", unsafe_allow_html=True)
+st.markdown("<br><br>", unsafe_allow_html=True)
+st.markdown("<div style='text-align:center;color:#ccc;font-size:0.8rem;'>K2P • גרסה 2.0</div>", unsafe_allow_html=True)
