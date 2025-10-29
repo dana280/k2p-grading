@@ -15,155 +15,169 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# CSS מעוצב וצבעוני
+# CSS נקי ומינימליסטי
 st.markdown("""
 <style>
     /* ניקוי */
     #MainMenu, footer, header {visibility: hidden;}
-    .block-container {padding-top: 1rem;}
+    .block-container {padding-top: 1.5rem; max-width: 1200px;}
     
-    /* רקע */
+    /* רקע נקי */
     .main {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background-color: #f8f9fa;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
     
-    /* כותרת צבעונית */
-    .custom-header {
-        background: linear-gradient(90deg, #0080C8 0%, #7FBA00 50%, #0080C8 100%);
-        padding: 2rem 3rem;
-        border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        margin-bottom: 2rem;
+    /* לוגו בפינה */
+    .logo-corner {
+        position: fixed;
+        top: 1rem;
+        right: 2rem;
+        z-index: 999;
+    }
+    
+    /* כותרת פשוטה */
+    .header-simple {
         text-align: center;
+        padding: 1.5rem 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        margin-bottom: 2rem;
+        border-left: 4px solid #0080C8;
     }
     
-    .custom-header h1 {
-        color: white;
-        font-size: 2.5rem;
-        font-weight: 700;
+    .header-simple h1 {
+        color: #1a1a1a;
+        font-size: 1.8rem;
+        font-weight: 600;
         margin: 0;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
     }
     
-    .custom-header h2 {
-        color: rgba(255,255,255,0.95);
-        font-size: 1.3rem;
+    .header-simple h2 {
+        color: #666;
+        font-size: 1.1rem;
         font-weight: 400;
-        margin: 0.5rem 0 0 0;
+        margin: 0.3rem 0 0 0;
     }
     
-    /* ריבוע העלאה במרכז */
-    .upload-container {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 2rem;
+    /* ריבוע העלאה באמצע */
+    .upload-square-container {
+        max-width: 500px;
+        margin: 3rem auto;
     }
     
     [data-testid="stFileUploader"] {
-        border: 3px dashed #0080C8;
-        border-radius: 20px;
+        border: 2px dashed #0080C8;
+        border-radius: 12px;
         background: white;
-        padding: 3rem 2rem;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        padding: 2.5rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         transition: all 0.3s ease;
+        min-height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     [data-testid="stFileUploader"]:hover {
         border-color: #7FBA00;
-        transform: translateY(-5px);
-        box-shadow: 0 12px 30px rgba(0,128,200,0.2);
+        box-shadow: 0 6px 16px rgba(0,128,200,0.15);
+        transform: translateY(-2px);
     }
     
     [data-testid="stFileUploader"] section {
-        padding: 2rem;
+        padding: 1.5rem;
         text-align: center;
+        width: 100%;
     }
     
     [data-testid="stFileUploader"] label {
-        font-size: 1.2rem !important;
+        font-size: 1.1rem !important;
         font-weight: 600 !important;
         color: #0080C8 !important;
     }
     
-    /* כפתור צבעוני */
+    /* כפתור */
     .stButton>button {
-        background: linear-gradient(90deg, #0080C8 0%, #7FBA00 100%);
+        background-color: #0080C8;
         color: white;
         border: none;
-        border-radius: 10px;
-        padding: 0.8rem 2.5rem;
-        font-size: 1.1rem;
+        border-radius: 8px;
+        padding: 0.7rem 2rem;
+        font-size: 1rem;
         font-weight: 600;
-        box-shadow: 0 4px 15px rgba(0,128,200,0.3);
-        transition: all 0.3s ease;
-        width: 100%;
-        max-width: 300px;
-        margin: 0 auto;
-        display: block;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(0,128,200,0.2);
     }
     
     .stButton>button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(0,128,200,0.4);
+        background-color: #006ba1;
+        box-shadow: 0 4px 12px rgba(0,128,200,0.3);
+        transform: translateY(-1px);
+    }
+    
+    /* מרכוז כפתור */
+    .button-center {
+        text-align: center;
+        margin: 2rem auto;
     }
     
     /* הגדרות */
     .streamlit-expanderHeader {
         background: white;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        font-weight: 600;
-        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        font-weight: 500;
+        padding: 0.8rem;
+        border-left: 3px solid #0080C8;
     }
     
-    /* הודעות צבעוניות */
+    /* הודעות */
     .stSuccess {
-        background: linear-gradient(90deg, #d4edda 0%, #c3e6cb 100%);
-        border-left: 4px solid #28a745;
-        border-radius: 10px;
+        background-color: #f0f9ff;
+        border-left: 4px solid #0080C8;
+        border-radius: 8px;
         padding: 1rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        color: #0369a1;
     }
     
     .stInfo {
-        background: linear-gradient(90deg, #d1ecf1 0%, #bee5eb 100%);
-        border-left: 4px solid #17a2b8;
-        border-radius: 10px;
+        background-color: #eff6ff;
+        border-left: 4px solid #3b82f6;
+        border-radius: 8px;
         padding: 1rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        color: #1e40af;
     }
     
     .stError {
-        background: linear-gradient(90deg, #f8d7da 0%, #f5c6cb 100%);
-        border-left: 4px solid #dc3545;
-        border-radius: 10px;
+        background-color: #fef2f2;
+        border-left: 4px solid #ef4444;
+        border-radius: 8px;
         padding: 1rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        color: #991b1b;
     }
     
     /* מטריקות */
     [data-testid="stMetricValue"] {
         font-size: 2rem;
         font-weight: 700;
-        background: linear-gradient(90deg, #0080C8 0%, #7FBA00 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #0080C8;
     }
     
     [data-testid="stMetricLabel"] {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         color: #666;
         font-weight: 600;
     }
     
     /* קלפי תוצאות */
-    .results-card {
+    .results-container {
         background: white;
-        border-radius: 15px;
+        border-radius: 12px;
         padding: 2rem;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        margin: 1rem 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        margin-top: 2rem;
     }
     
     /* טבלה */
@@ -171,66 +185,63 @@ st.markdown("""
         background: white;
         border-radius: 10px;
         overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        border: 1px solid #e5e7eb;
     }
     
     table thead {
-        background: linear-gradient(90deg, #0080C8 0%, #7FBA00 100%);
+        background-color: #f8f9fa;
     }
     
     table th {
-        color: white !important;
+        color: #1a1a1a !important;
         font-weight: 600;
-        padding: 15px !important;
+        padding: 12px !important;
+        border-bottom: 2px solid #e5e7eb;
     }
     
     table td {
-        padding: 12px !important;
-        border-bottom: 1px solid #f0f0f0;
+        padding: 10px !important;
+        border-bottom: 1px solid #f3f4f6;
     }
     
     /* תיבת טקסט */
     .stTextInput>div>div>input {
         border-radius: 8px;
-        border: 2px solid #e0e0e0;
-        padding: 0.7rem;
+        border: 1px solid #e0e0e0;
+        padding: 0.6rem;
     }
     
     .stTextInput>div>div>input:focus {
         border-color: #0080C8;
-        box-shadow: 0 0 0 3px rgba(0,128,200,0.1);
+        box-shadow: 0 0 0 2px rgba(0,128,200,0.1);
     }
     
     /* Progress bar */
     .stProgress > div > div > div > div {
-        background: linear-gradient(90deg, #0080C8 0%, #7FBA00 100%);
+        background-color: #0080C8;
     }
     
-    /* לוגו */
-    .logo-container {
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-    
-    .logo-container img {
-        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
-    }
+    /* מרווחים */
+    .space-small {margin: 1rem 0;}
+    .space-medium {margin: 2rem 0;}
+    .space-large {margin: 3rem 0;}
 </style>
 """, unsafe_allow_html=True)
 
-# לוגו במרכז
-st.markdown('<div class="logo-container">', unsafe_allow_html=True)
+# לוגו בפינה
+st.markdown('<div class="logo-corner">', unsafe_allow_html=True)
 try:
-    st.image("k2p_logo.png", width=200)
+    st.image("k2p_logo.png", width=150)
 except:
-    st.markdown("<h3 style='text-align:center;color:#0080C8;'>K2P</h3>", unsafe_allow_html=True)
+    pass
 st.markdown('</div>', unsafe_allow_html=True)
 
-# כותרת צבעונית
+# כותרת פשוטה
 st.markdown("""
-<div class="custom-header">
-    <h1>📚 מערכת בדיקת מטלות אקדמאיות</h1>
-    <h2>🎓 קורס התנהגות ארגונית</h2>
+<div class="header-simple">
+    <h1>מערכת בדיקת מטלות אקדמאיות</h1>
+    <h2>קורס התנהגות ארגונית</h2>
 </div>
 """, unsafe_allow_html=True)
 
@@ -249,9 +260,7 @@ with st.expander("⚙️ הגדרות", expanded=False):
     )
     if api_key:
         st.session_state.api_key = api_key
-        st.success("✅ API Key נשמר בהצלחה!")
-
-st.markdown("<br>", unsafe_allow_html=True)
+        st.success("API Key נשמר")
 
 # פונקציות
 def read_docx(file):
@@ -262,7 +271,6 @@ def read_docx(file):
         return f"שגיאה: {str(e)}"
 
 def extract_work_number(filename):
-    """חילוץ מספר מטלה בלבד מהשם הקובץ"""
     name = filename.replace('.docx', '').replace('.doc', '')
     
     match = re.search(r'WorkCode[_-]?(\d+)', name, re.IGNORECASE)
@@ -367,8 +375,8 @@ def create_styled_excel(results):
     headers = ['שם קובץ', 'מספר', 'ציון', 'הערות']
     ws.append(headers)
     
-    header_fill = PatternFill(start_color="0080C8", end_color="7FBA00", fill_type="solid")
-    header_font = Font(bold=True, size=12, name="Arial", color="FFFFFF")
+    header_fill = PatternFill(start_color="F8F9FA", end_color="F8F9FA", fill_type="solid")
+    header_font = Font(bold=True, size=12, name="Arial", color="1A1A1A")
     header_alignment = Alignment(horizontal="center", vertical="center")
     
     for col in range(1, 5):
@@ -377,24 +385,24 @@ def create_styled_excel(results):
         cell.font = header_font
         cell.alignment = header_alignment
         cell.border = Border(
-            left=Side(style='thin'),
-            right=Side(style='thin'),
-            top=Side(style='thin'),
-            bottom=Side(style='thin')
+            left=Side(style='thin', color="E5E7EB"),
+            right=Side(style='thin', color="E5E7EB"),
+            top=Side(style='thin', color="E5E7EB"),
+            bottom=Side(style='medium', color="E5E7EB")
         )
     
-    row_colors = ["E6F2FF", "E8F5E9", "FFF9E6", "F3E5F5", "FFE6F0", "E1F5FE"]
+    row_colors = ["FFFFFF", "F9FAFB"]
     
     def get_grade_color(grade):
-        if grade >= 90: return "C8E6C9"
-        if grade >= 85: return "BBDEFB"
-        if grade >= 80: return "FFF59D"
-        if grade >= 70: return "FFCC80"
-        return "FFCDD2"
+        if grade >= 90: return "D1FAE5"
+        if grade >= 85: return "DBEAFE"
+        if grade >= 80: return "FEF3C7"
+        if grade >= 70: return "FED7AA"
+        return "FEE2E2"
     
     for idx, result in enumerate(results):
         row_num = idx + 2
-        bg_color = row_colors[idx % len(row_colors)]
+        bg_color = row_colors[idx % 2]
         
         ws.append([
             result['filename'],
@@ -423,10 +431,10 @@ def create_styled_excel(results):
                     cell.alignment = Alignment(horizontal="right", vertical="top", wrap_text=True)
             
             cell.border = Border(
-                left=Side(style='thin', color="CCCCCC"),
-                right=Side(style='thin', color="CCCCCC"),
-                top=Side(style='thin', color="CCCCCC"),
-                bottom=Side(style='thin', color="CCCCCC")
+                left=Side(style='thin', color="E5E7EB"),
+                right=Side(style='thin', color="E5E7EB"),
+                top=Side(style='thin', color="E5E7EB"),
+                bottom=Side(style='thin', color="E5E7EB")
             )
     
     ws.column_dimensions['A'].width = 45
@@ -445,8 +453,8 @@ def create_styled_excel(results):
     output.seek(0)
     return output
 
-# ריבוע העלאה במרכז
-st.markdown('<div class="upload-container">', unsafe_allow_html=True)
+# ריבוע העלאה באמצע
+st.markdown('<div class="upload-square-container">', unsafe_allow_html=True)
 
 uploaded_files = st.file_uploader(
     "📤 גרור קבצים לכאן או לחץ לבחירה",
@@ -458,43 +466,40 @@ uploaded_files = st.file_uploader(
 st.markdown('</div>', unsafe_allow_html=True)
 
 if uploaded_files:
-    st.success(f"✅ {len(uploaded_files)} קבצים הועלו בהצלחה!")
+    st.success(f"✅ {len(uploaded_files)} קבצים הועלו")
     
-    st.markdown("<br>", unsafe_allow_html=True)
-    
-    col1, col2, col3 = st.columns([2, 1, 2])
-    with col2:
-        if st.button("🚀 התחל בדיקה", type="primary"):
-            if not st.session_state.api_key:
-                st.error("❌ נא להזין Claude API Key בהגדרות")
-            else:
-                results = []
-                progress_bar = st.progress(0)
-                status_text = st.empty()
+    st.markdown('<div class="button-center">', unsafe_allow_html=True)
+    if st.button("🚀 התחל בדיקה", type="primary"):
+        if not st.session_state.api_key:
+            st.error("❌ נא להזין Claude API Key בהגדרות")
+        else:
+            results = []
+            progress_bar = st.progress(0)
+            status_text = st.empty()
+            
+            for idx, file in enumerate(uploaded_files):
+                status_text.text(f"בודק {idx + 1}/{len(uploaded_files)}")
+                progress_bar.progress((idx + 1) / len(uploaded_files))
                 
-                for idx, file in enumerate(uploaded_files):
-                    status_text.text(f"בודק מטלה {idx + 1} מתוך {len(uploaded_files)}...")
-                    progress_bar.progress((idx + 1) / len(uploaded_files))
-                    
-                    content = read_docx(file)
-                    result = grade_assignment(content, file.name, st.session_state.api_key)
-                    results.append({
-                        'filename': file.name,
-                        'workNumber': result.get('workNumber', ''),
-                        'grade': result.get('grade', 0),
-                        'comments': result.get('comments', '')
-                    })
-                
-                st.session_state.results = results
-                progress_bar.empty()
-                status_text.empty()
-                st.success("✅ הבדיקה הושלמה בהצלחה!")
-                st.rerun()
+                content = read_docx(file)
+                result = grade_assignment(content, file.name, st.session_state.api_key)
+                results.append({
+                    'filename': file.name,
+                    'workNumber': result.get('workNumber', ''),
+                    'grade': result.get('grade', 0),
+                    'comments': result.get('comments', '')
+                })
+            
+            st.session_state.results = results
+            progress_bar.empty()
+            status_text.empty()
+            st.success("✅ הבדיקה הושלמה!")
+            st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # תוצאות
 if 'results' in st.session_state and st.session_state.results:
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    st.markdown('<div class="results-card">', unsafe_allow_html=True)
+    st.markdown('<div class="results-container">', unsafe_allow_html=True)
     st.markdown("### 📊 תוצאות הבדיקה")
     
     grades = [r['grade'] for r in st.session_state.results]
@@ -511,7 +516,7 @@ if 'results' in st.session_state and st.session_state.results:
     
     st.markdown('</div>', unsafe_allow_html=True)
     
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown('<div class="space-medium"></div>', unsafe_allow_html=True)
     
     # טבלה
     table_html = "<table style='width:100%;'>"
@@ -523,45 +528,44 @@ if 'results' in st.session_state and st.session_state.results:
     table_html += "</tr></thead><tbody>"
     
     for idx, r in enumerate(st.session_state.results):
-        bg = "#fafafa" if idx % 2 == 0 else "#ffffff"
         
         if r['grade'] >= 90:
-            grade_color = "#c8e6c9"
+            grade_color = "#d1fae5"
         elif r['grade'] >= 85:
-            grade_color = "#bbdefb"
+            grade_color = "#dbeafe"
         elif r['grade'] >= 80:
-            grade_color = "#fff59d"
+            grade_color = "#fef3c7"
         else:
-            grade_color = "#ffcdd2"
+            grade_color = "#fee2e2"
             
-        table_html += f"<tr style='background-color: {bg};'>"
+        table_html += "<tr>"
         table_html += f"<td style='text-align: right;'>{r['filename']}</td>"
         table_html += f"<td style='text-align: center; font-weight: 600;'>{r['workNumber']}</td>"
-        table_html += f"<td style='text-align: center; background-color: {grade_color}; font-weight: 700; font-size: 1.2rem;'>{r['grade']}</td>"
+        table_html += f"<td style='text-align: center; background-color: {grade_color}; font-weight: 700; font-size: 1.1rem;'>{r['grade']}</td>"
         table_html += f"<td style='text-align: right; white-space: pre-line; font-size: 0.9rem; color: #555;'>{r['comments']}</td>"
         table_html += "</tr>"
     
     table_html += "</tbody></table>"
     st.markdown(table_html, unsafe_allow_html=True)
     
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown('<div class="space-medium"></div>', unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns([2, 1, 2])
     
     with col1:
         excel_file = create_styled_excel(st.session_state.results)
         st.download_button(
-            label="📥 הורד קובץ Excel",
+            label="📥 הורד Excel",
             data=excel_file,
-            file_name=f"תוצאות_K2P_{datetime.now().strftime('%Y%m%d')}.xlsx",
+            file_name=f"תוצאות_{datetime.now().strftime('%Y%m%d')}.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             use_container_width=True
         )
     
     with col3:
-        if st.button("🗑️ נקה תוצאות", use_container_width=True):
+        if st.button("🗑️ נקה", use_container_width=True):
             del st.session_state.results
             st.rerun()
 
-st.markdown("<br><br>", unsafe_allow_html=True)
-st.markdown("<div style='text-align:center;color:#888;font-size:0.9rem;padding:2rem;'>K2P - Knowledge to People • גרסה 2.0 • Powered by Claude AI</div>", unsafe_allow_html=True)
+st.markdown('<div class="space-large"></div>', unsafe_allow_html=True)
+st.markdown("<div style='text-align:center;color:#999;font-size:0.85rem;'>K2P - Knowledge to People • גרסה 2.0</div>", unsafe_allow_html=True)
