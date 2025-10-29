@@ -32,6 +32,9 @@ st.markdown("""
     .logo-top {
         text-align: right;
         margin-bottom: 3rem;
+        background-color: white;
+        padding: 1rem;
+        border-radius: 8px;
     }
     
     /* כותרת */
@@ -201,7 +204,6 @@ st.markdown("## קורס התנהגות ארגונית")
 if 'api_key' not in st.session_state:
     st.session_state.api_key = ""
 
-# *** שינוי 1: הוספת counter למחיקת קבצים ***
 if 'uploader_key' not in st.session_state:
     st.session_state.uploader_key = 0
 
@@ -378,7 +380,7 @@ def create_styled_excel(results):
     output.seek(0)
     return output
 
-# העלאה - *** שינוי 2: הוספת key שמשתנה ***
+# העלאה
 uploaded_files = st.file_uploader(
     "גרור קבצים או לחץ לבחירה",
     type=['docx'],
@@ -479,7 +481,7 @@ if 'results' in st.session_state and st.session_state.results:
     with col2:
         if st.button("נקה"):
             del st.session_state.results
-            st.session_state.uploader_key += 1  # *** שינוי 3: העלאת counter ***
+            st.session_state.uploader_key += 1
             st.rerun()
 
 st.markdown("<br><br>", unsafe_allow_html=True)
