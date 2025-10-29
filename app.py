@@ -6,6 +6,7 @@ import docx
 import io
 import re
 from datetime import datetime
+import PyPDF2
 
 st.set_page_config(
     page_title="K2P - בדיקת מטלות",
@@ -223,9 +224,20 @@ def read_docx(file):
     except Exception as e:
         return f"שגיאה: {str(e)}"
 
+def read_pdf(file):
+    """קריאת קובץ PDF"""
+    try:
+        pdf_reader = PyPDF2.PdfReader(file)
+        text = []
+        for page in pdf_reader.pages:
+            text.append(page.extract_text())
+        return '\n'.join(text)
+    except Exception as e:
+        return f"שגיאה בקריאת PDF: {str(e)}"
+
 def extract_work_number(filename):
     """חילוץ מספר מטלה משם הקובץ - רק המספר שאחרי WorkCode_"""
-    name = filename.replace('.docx', '').replace('.DOCX', '').replace('.doc', '')
+    name = filename.replace('.docx', '').replace('.DOCX', '').replace('.doc', '').replace('.pdf', '').replace('.PDF', '')
     
     # חיפוש אחר WorkCode_ ואז מספרים - זה הכי חשוב!
     match = re.search(r'WorkCode[_-](\d+)', name, re.IGNORECASE)
@@ -380,12 +392,12 @@ def create_styled_excel(results):
     output.seek(0)
     return output
 
-# העלאה
+# העלאה - שינוי 1: הוספת pdf
 uploaded_files = st.file_uploader(
     "גרור קבצים או לחץ לבחירה",
-    type=['docx'],
+    type=['docx', 'pdf'],
     accept_multiple_files=True,
-    help="קבצי Word בלבד",
+    help="קבצי Word או PDF",
     key=f"uploader_{st.session_state.uploader_key}"
 )
 
@@ -404,7 +416,12 @@ if uploaded_files:
                 status_text.text(f"בודק {idx + 1}/{len(uploaded_files)}")
                 progress_bar.progress((idx + 1) / len(uploaded_files))
                 
-                content = read_docx(file)
+                # שינוי 2: בדיקה אם PDF או DOCX
+                if file.name.lower().endswith('.pdf'):
+                    content = read_pdf(file)
+                else:
+                    content = read_docx(file)
+                
                 result = grade_assignment(content, file.name, st.session_state.api_key)
                 results.append({
                     'filename': file.name,
