@@ -18,8 +18,8 @@ st.markdown("""
 <style>
     #MainMenu, footer, header {visibility: hidden;}
     .block-container {
-        padding-top: 3rem;
-        padding-bottom: 3rem;
+        padding-top: 1rem;
+        padding-bottom: 2rem;
         max-width: 700px;
     }
     
@@ -30,11 +30,8 @@ st.markdown("""
     
     /* לוגו */
     .logo-top {
-        text-align: right;
-        margin-bottom: 3rem;
-        background-color: white;
-        padding: 1rem;
-        border-radius: 8px;
+        text-align: center;
+        margin-bottom: 1.5rem;
     }
     
     /* כותרת */
@@ -53,7 +50,7 @@ st.markdown("""
         font-size: 1rem;
         color: #666;
         font-weight: 400;
-        margin-bottom: 3rem;
+        margin-bottom: 2rem;
     }
     
     /* ריבוע העלאה */
@@ -191,9 +188,9 @@ st.markdown("""
 # לוגו
 st.markdown('<div class="logo-top">', unsafe_allow_html=True)
 try:
-    st.image("https://5el36i5klq.ufs.sh/f/Z3t1XHIXUkD6xQHZrGWFhpxfDNksJS2BnKoAX3W6gZbLziVm", width=350)
+    st.image("https://5el36i5klq.ufs.sh/f/Z3t1XHIXUkD6K1mj350K1IbZGk4nuE8SafY276jMR5cNUhgw", width=350)
 except:
-    st.markdown("<div style='text-align:right;color:#0080C8;font-weight:600;'>K2P</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align:center;color:#0080C8;font-weight:600;'>K2P</div>", unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
 # כותרת
