@@ -227,24 +227,18 @@ def extract_work_number(filename):
     """חילוץ מספר מטלה משם הקובץ - רק המספר שאחרי WorkCode_"""
     name = filename.replace('.docx', '').replace('.DOCX', '').replace('.doc', '')
     
-    # חיפוש אחר WorkCode_ ואז מספרים
-    match = re.search(r'WorkCode[_-]?(\d+)', name, re.IGNORECASE)
+    # חיפוש אחר WorkCode_ ואז מספרים - זה הכי חשוב!
+    match = re.search(r'WorkCode[_-](\d+)', name, re.IGNORECASE)
     if match:
         return match.group(1)
     
-    # אם לא נמצא WorkCode, נחפש מספר ארוך בסוף הקובץ
-    match = re.search(r'(\d{8,})(?!.*\d)', name)
-    if match:
-        return match.group(1)
-    
-    # כפתרון אחרון - כל מספר ארוך
-    match = re.search(r'(\d{4,})', name)
-    if match:
-        return match.group(1)
-    
-    return ""
+    # אם אין WorkCode - מחזירים ריק
+    return "לא נמצא WorkCode"
 
 def grade_assignment(content, filename, api_key):
+    # חילוץ מספר המטלה לפני הבדיקה
+    work_number = extract_work_number(filename)
+    
     try:
         client = anthropic.Anthropic(api_key=api_key)
         
@@ -280,7 +274,6 @@ def grade_assignment(content, filename, api_key):
 
 JSON:
 {{
-  "workNumber": "מספר",
   "grade": 0-100,
   "comments": "הערות או ריק"
 }}
@@ -300,17 +293,22 @@ JSON:
         if json_match:
             import json
             result = json.loads(json_match.group(0))
-            return result
+            # משתמשים במספר שחילצנו משם הקובץ!
+            return {
+                "workNumber": work_number,
+                "grade": result.get('grade', 0),
+                "comments": result.get('comments', '')
+            }
         
         return {
-            "workNumber": extract_work_number(filename),
+            "workNumber": work_number,
             "grade": 0,
             "comments": "לא הצלחתי לפענח תשובה"
         }
         
     except Exception as e:
         return {
-            "workNumber": extract_work_number(filename),
+            "workNumber": work_number,
             "grade": 0,
             "comments": f"שגיאה: {str(e)}"
         }
