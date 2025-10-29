@@ -188,13 +188,13 @@ st.markdown("""
 # לוגו
 st.markdown('<div class="logo-top">', unsafe_allow_html=True)
 try:
-    st.image("k2p_logo.png", width=120)
+    st.image("k2p_logo.png", width=200)
 except:
     st.markdown("<div style='text-align:right;color:#0080C8;font-weight:600;'>K2P</div>", unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
 # כותרת
-st.markdown("# מערכת בדיקת מטלות אקדמאיות")
+st.markdown("<h1 style='background: linear-gradient(135deg, #0080C8 0%, #00BCD4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;'>מערכת בדיקת מטלות אקדמאיות</h1>", unsafe_allow_html=True)
 st.markdown("## קורס התנהגות ארגונית")
 
 # API
