@@ -224,19 +224,24 @@ def read_docx(file):
         return f"שגיאה: {str(e)}"
 
 def extract_work_number(filename):
-    name = filename.replace('.docx', '').replace('.doc', '')
+    """חילוץ מספר מטלה משם הקובץ - רק המספר שאחרי WorkCode_"""
+    name = filename.replace('.docx', '').replace('.DOCX', '').replace('.doc', '')
+    
+    # חיפוש אחר WorkCode_ ואז מספרים
     match = re.search(r'WorkCode[_-]?(\d+)', name, re.IGNORECASE)
     if match:
         return match.group(1)
-    match = re.search(r'\b(\d{8,9})\b', name)
+    
+    # אם לא נמצא WorkCode, נחפש מספר ארוך בסוף הקובץ
+    match = re.search(r'(\d{8,})(?!.*\d)', name)
     if match:
         return match.group(1)
-    match = re.search(r'\b(\d{4,})\b', name)
+    
+    # כפתרון אחרון - כל מספר ארוך
+    match = re.search(r'(\d{4,})', name)
     if match:
         return match.group(1)
-    match = re.search(r'(\d+)', name)
-    if match:
-        return match.group(1)
+    
     return ""
 
 def grade_assignment(content, filename, api_key):
