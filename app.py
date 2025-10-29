@@ -14,45 +14,92 @@ st.set_page_config(
     layout="wide"
 )
 
-# CSS מעוצב
+# CSS מודרני ונקי
 st.markdown("""
 <style>
-    .main {background-color: #ffffff;}
+    /* רקע נקי */
+    .main {
+        background-color: #ffffff;
+        padding-top: 1rem;
+    }
     
-    /* ריבוע העלאה מעוצב */
-    .upload-box {
-        border: 3px dashed #0080C8;
-        border-radius: 20px;
-        padding: 60px;
+    /* הסתרת תפריט המבורגר */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    
+    /* לוגו */
+    .logo-container {
+        text-align: right;
+        padding: 0;
+        margin-bottom: -20px;
+    }
+    
+    /* כותרות מודרניות */
+    h1 {
         text-align: center;
-        background: linear-gradient(135deg, #f5f9fc 0%, #e8f4f8 100%);
-        transition: all 0.3s;
-        cursor: pointer;
-        min-height: 300px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        background: linear-gradient(90deg, #0080C8 0%, #7FBA00 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 2.2em;
+        font-weight: 800;
+        margin: 0.5rem 0;
+        padding: 0;
     }
     
-    .upload-box:hover {
+    h2 {
+        text-align: center;
+        color: #0080C8;
+        font-size: 1.5em;
+        font-weight: 600;
+        margin: 0.3rem 0 1rem 0;
+    }
+    
+    h3 {
+        color: #0080C8;
+        font-weight: 700;
+        font-size: 1.3em;
+        margin-top: 2rem;
+    }
+    
+    /* אזור העלאה מודרני */
+    [data-testid="stFileUploader"] {
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        border: 3px dashed #0080C8;
+        border-radius: 16px;
+        padding: 3rem;
+        margin: 2rem 0;
+    }
+    
+    [data-testid="stFileUploader"]:hover {
         border-color: #7FBA00;
-        background: linear-gradient(135deg, #f0f8f0 0%, #e8f5e9 100%);
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0,128,200,0.2);
+        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        box-shadow: 0 8px 24px rgba(0,128,200,0.15);
+        transform: translateY(-2px);
+        transition: all 0.3s ease;
     }
     
-    /* כפתור ראשי */
+    [data-testid="stFileUploader"] section {
+        padding: 2rem;
+    }
+    
+    [data-testid="stFileUploader"] label {
+        font-size: 1.4rem !important;
+        font-weight: 700 !important;
+        color: #0080C8 !important;
+    }
+    
+    /* כפתורים */
     .stButton>button {
         background: linear-gradient(90deg, #0080C8 0%, #7FBA00 100%);
         color: white;
-        font-size: 18px;
-        font-weight: bold;
-        padding: 15px 40px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        padding: 0.8rem 2rem;
         border-radius: 12px;
         border: none;
         width: 100%;
-        box-shadow: 0 4px 15px rgba(0,128,200,0.3);
+        box-shadow: 0 4px 12px rgba(0,128,200,0.3);
+        transition: all 0.3s ease;
     }
     
     .stButton>button:hover {
@@ -60,52 +107,57 @@ st.markdown("""
         box-shadow: 0 6px 20px rgba(0,128,200,0.4);
     }
     
-    /* לוגו */
-    .logo {
-        text-align: right;
-        padding: 20px;
-        font-size: 32px;
-        font-weight: bold;
-        background: linear-gradient(90deg, #0080C8 0%, #7FBA00 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+    /* אזור הגדרות */
+    .streamlit-expanderHeader {
+        background-color: #f8fafc;
+        border-radius: 10px;
+        font-weight: 600;
     }
     
-    /* כותרות */
-    h1 {
-        text-align: center;
-        background: linear-gradient(90deg, #0080C8 0%, #7FBA00 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        font-size: 2.5em;
-        margin-bottom: 10px;
+    /* הודעות */
+    .stSuccess, .stInfo, .stWarning, .stError {
+        border-radius: 10px;
+        padding: 1rem;
+        margin: 1rem 0;
     }
     
-    h2 {
-        text-align: center;
+    /* מטריקות */
+    [data-testid="stMetricValue"] {
+        font-size: 2rem;
+        font-weight: 800;
         color: #0080C8;
-        font-size: 1.8em;
+    }
+    
+    /* טבלה */
+    table {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    /* חלוקת עמודות */
+    [data-testid="column"] {
+        padding: 0.5rem;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# לוגו בפינה ימנית
-col1, col2, col3 = st.columns([2, 6, 2])
+# לוגו בראש העמוד
+col1, col2, col3 = st.columns([1, 6, 1])
 with col3:
-    st.markdown("<div class='logo'>K2P</div>", unsafe_allow_html=True)
+    try:
+        st.image("k2p_logo.png", width=180)
+    except:
+        st.markdown("### K2P")
 
 # כותרות
 st.markdown("# 📚 מערכת בדיקת מטלות אקדמאיות")
 st.markdown("## 🎓 קורס התנהגות ארגונית")
-st.markdown("---")
 
 # API Key
 if 'api_key' not in st.session_state:
     st.session_state.api_key = ""
 
-# הגדרות בתיבה מתקפלת
+# הגדרות מתקפלות
 with st.expander("⚙️ הגדרות", expanded=False):
     api_key = st.text_input(
         "Claude API Key",
@@ -118,19 +170,18 @@ with st.expander("⚙️ הגדרות", expanded=False):
         st.session_state.api_key = api_key
         st.success("✅ API Key נשמר")
     
-    st.markdown("---")
-    st.info("**גרסה:** 2.0\n\n**מפתח:** K2P - Knowledge to People")
+    st.divider()
+    st.info("**גרסה:** 2.0  \n**מפתח:** K2P - Knowledge to People")
 
-# פונקציות
+st.divider()
+
+# פונקציות עזר
 def read_docx(file):
     try:
         doc = docx.Document(file)
-        text = []
-        for para in doc.paragraphs:
-            text.append(para.text)
-        return '\n'.join(text)
+        return '\n'.join([p.text for p in doc.paragraphs if p.text.strip()])
     except Exception as e:
-        return f"שגיאה בקריאת קובץ: {str(e)}"
+        return f"שגיאה: {str(e)}"
 
 def extract_work_number(filename):
     match = re.search(r'WorkCode[_-]?(\d+)', filename)
@@ -216,6 +267,7 @@ def create_styled_excel(results):
     headers = ['שם קובץ', 'מספר', 'ציון', 'הערות']
     ws.append(headers)
     
+    # עיצוף כותרות
     header_fill = PatternFill(start_color="D9D9D9", end_color="D9D9D9", fill_type="solid")
     header_font = Font(bold=True, size=12, name="Arial")
     header_alignment = Alignment(horizontal="center", vertical="center")
@@ -232,6 +284,7 @@ def create_styled_excel(results):
             bottom=Side(style='thin')
         )
     
+    # צבעי שורות
     row_colors = ["E6F2FF", "E8F5E9", "FFF9E6", "F3E5F5", "FFE6F0", "E1F5FE"]
     
     def get_grade_color(grade):
@@ -255,7 +308,7 @@ def create_styled_excel(results):
         for col in range(1, 5):
             cell = ws.cell(row_num, col)
             
-            if col == 3:
+            if col == 3:  # עמודת ציון
                 cell.fill = PatternFill(start_color=get_grade_color(result['grade']), 
                                        end_color=get_grade_color(result['grade']), 
                                        fill_type="solid")
@@ -265,7 +318,7 @@ def create_styled_excel(results):
                 cell.fill = PatternFill(start_color=bg_color, end_color=bg_color, fill_type="solid")
                 cell.font = Font(size=11, name="Arial")
                 
-                if col == 2:
+                if col == 2:  # מספר מטלה
                     cell.font = Font(bold=True, size=12, name="Arial")
                     cell.alignment = Alignment(horizontal="center", vertical="center")
                 else:
@@ -278,11 +331,13 @@ def create_styled_excel(results):
                 bottom=Side(style='thin', color="CCCCCC")
             )
     
+    # רוחב עמודות
     ws.column_dimensions['A'].width = 45
     ws.column_dimensions['B'].width = 12
     ws.column_dimensions['C'].width = 10
     ws.column_dimensions['D'].width = 100
     
+    # גובה שורות - כל הערה בשורה נפרדת!
     ws.row_dimensions[1].height = 30
     for idx, result in enumerate(results):
         row_num = idx + 2
@@ -294,25 +349,14 @@ def create_styled_excel(results):
     output.seek(0)
     return output
 
-# ריבוע העלאה מעוצב
-st.markdown("""
-<div class='upload-box'>
-    <div style='font-size: 64px; margin-bottom: 20px;'>📤</div>
-    <div style='font-size: 24px; font-weight: bold; color: #0080C8; margin-bottom: 10px;'>
-        גרור קבצים לכאן או לחץ לבחירה
-    </div>
-    <div style='font-size: 14px; color: #666;'>
-        תומך ב-Word (.docx) | עד 50 קבצים
-    </div>
-</div>
-""", unsafe_allow_html=True)
+# העלאת קבצים
+st.markdown("### 📤 העלאת מטלות")
 
 uploaded_files = st.file_uploader(
-    "בחר קבצים",
+    "גרור קבצים לכאן או לחץ לבחירה",
     type=['docx'],
     accept_multiple_files=True,
-    help="ניתן להעלות עד 50 קבצים בו-זמנית",
-    label_visibility="collapsed"
+    help="תומך ב-Word (.docx) | עד 50 קבצים"
 )
 
 if uploaded_files:
@@ -347,28 +391,31 @@ if uploaded_files:
 
 # הצגת תוצאות
 if 'results' in st.session_state and st.session_state.results:
-    st.markdown("---")
+    st.divider()
     st.markdown("### 📊 תוצאות הבדיקה")
     
     grades = [r['grade'] for r in st.session_state.results]
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
     
     with col1:
         st.metric("ממוצע", f"{sum(grades)/len(grades):.1f}")
     with col2:
-        st.metric("מינימום", f"{min(grades)}")
+        st.metric("מקסימום", f"{max(grades)}")
     with col3:
-        st.metric("מטלות נבדקו", f"{len(grades)}")
+        st.metric("מינימום", f"{min(grades)}")
+    with col4:
+        st.metric("מטלות", f"{len(grades)}")
     
     st.markdown("#### 📋 פירוט מטלות")
     
-    table_html = "<table style='width:100%; border-collapse: collapse;'>"
-    table_html += "<tr style='background-color: #f0f0f0;'>"
-    table_html += "<th style='padding: 10px; border: 1px solid #ddd; text-align: right;'>שם קובץ</th>"
-    table_html += "<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>מספר</th>"
-    table_html += "<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>ציון</th>"
-    table_html += "<th style='padding: 10px; border: 1px solid #ddd; text-align: right;'>הערות</th>"
-    table_html += "</tr>"
+    # טבלה מעוצבת
+    table_html = "<table style='width:100%; border-collapse: collapse; margin: 1rem 0;'>"
+    table_html += "<thead><tr style='background: linear-gradient(90deg, #0080C8 0%, #7FBA00 100%);'>"
+    table_html += "<th style='padding: 12px; border: 1px solid #ddd; color: white; text-align: right;'>שם קובץ</th>"
+    table_html += "<th style='padding: 12px; border: 1px solid #ddd; color: white; text-align: center;'>מספר</th>"
+    table_html += "<th style='padding: 12px; border: 1px solid #ddd; color: white; text-align: center;'>ציון</th>"
+    table_html += "<th style='padding: 12px; border: 1px solid #ddd; color: white; text-align: right;'>הערות</th>"
+    table_html += "</tr></thead><tbody>"
     
     for r in st.session_state.results:
         if r['grade'] >= 90:
@@ -381,29 +428,34 @@ if 'results' in st.session_state and st.session_state.results:
             grade_color = "#FFCDD2"
             
         table_html += "<tr>"
-        table_html += f"<td style='padding: 10px; border: 1px solid #ddd; text-align: right;'>{r['filename']}</td>"
-        table_html += f"<td style='padding: 10px; border: 1px solid #ddd; text-align: center; font-weight: bold;'>{r['workNumber']}</td>"
-        table_html += f"<td style='padding: 10px; border: 1px solid #ddd; text-align: center; background-color: {grade_color}; font-weight: bold; font-size: 16px;'>{r['grade']}</td>"
-        table_html += f"<td style='padding: 10px; border: 1px solid #ddd; text-align: right; white-space: pre-line;'>{r['comments']}</td>"
+        table_html += f"<td style='padding: 12px; border: 1px solid #ddd; text-align: right;'>{r['filename']}</td>"
+        table_html += f"<td style='padding: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold;'>{r['workNumber']}</td>"
+        table_html += f"<td style='padding: 12px; border: 1px solid #ddd; text-align: center; background-color: {grade_color}; font-weight: bold; font-size: 18px;'>{r['grade']}</td>"
+        table_html += f"<td style='padding: 12px; border: 1px solid #ddd; text-align: right; white-space: pre-line;'>{r['comments']}</td>"
         table_html += "</tr>"
     
-    table_html += "</table>"
+    table_html += "</tbody></table>"
     st.markdown(table_html, unsafe_allow_html=True)
     
-    excel_file = create_styled_excel(st.session_state.results)
-    st.download_button(
-        label="📥 הורד קובץ Excel מעוצב",
-        data=excel_file,
-        file_name=f"דוח_מטלות_K2P_{datetime.now().strftime('%Y%m%d')}.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        use_container_width=True
-    )
+    # כפתורי הורדה וניקוי
+    col1, col2 = st.columns([3, 1])
     
-    st.info("🎨 **הקובץ כולל:** ✅ כל שורה בצבע שונה | ✅ כל הערה בשורה נפרדת | ✅ עיצוב מקצועי")
+    with col1:
+        excel_file = create_styled_excel(st.session_state.results)
+        st.download_button(
+            label="📥 הורד קובץ Excel מעוצב",
+            data=excel_file,
+            file_name=f"דוח_מטלות_K2P_{datetime.now().strftime('%Y%m%d')}.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            use_container_width=True
+        )
     
-    if st.button("🗑️ נקה תוצאות"):
-        del st.session_state.results
-        st.rerun()
+    with col2:
+        if st.button("🗑️ נקה תוצאות", use_container_width=True):
+            del st.session_state.results
+            st.rerun()
+    
+    st.info("🎨 **קובץ Excel כולל:** ✅ שורות צבעוניות | ✅ כל הערה בשורה נפרדת | ✅ עיצוב מקצועי")
 
-st.markdown("---")
-st.markdown("<div style='text-align:center;color:#888;'>K2P - Powered by Claude AI | גרסה 2.0</div>", unsafe_allow_html=True)
+st.divider()
+st.markdown("<div style='text-align:center;color:#888;padding:2rem 0;'>K2P - Powered by Claude AI | גרסה 2.0</div>", unsafe_allow_html=True)
